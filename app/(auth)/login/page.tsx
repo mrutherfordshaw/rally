@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation'
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
@@ -18,22 +18,24 @@ export default function LoginPage() {
     setError('')
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/api/auth/callback` },
+    })
 
     if (error) {
-      setError('Invalid email or password. Please try again.')
+      setError(error.message)
       setLoading(false)
       return
     }
 
-    router.push('/dashboard')
-    router.refresh()
+    sessionStorage.setItem('rally_verify_email', email)
+    router.push('/verify')
   }
 
   return (
     <div className="min-h-screen bg-[#f8f9ff] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="font-[family-name:var(--font-montserrat)] text-3xl font-bold text-[#ae2f34]">
             Rally
@@ -55,24 +57,13 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="you@deloitte.com"
+                placeholder="you@deloitte.co.uk"
                 required
                 className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] focus:border-transparent transition-all"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-[#0b1c30] mb-1">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] focus:border-transparent transition-all"
-              />
+              <p className="text-xs text-[#584140] mt-1">
+                We&apos;ll send a sign-in code to this address.
+              </p>
             </div>
 
             {error && (
@@ -84,7 +75,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full py-2.5 vibrant-gradient-coral text-white font-semibold rounded-lg hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
             >
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? 'Sending code…' : 'Send sign-in code'}
             </button>
           </form>
 
