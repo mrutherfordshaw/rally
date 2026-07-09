@@ -17,9 +17,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (profile && !profile.onboarded) redirect('/onboarding')
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff] flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{background: 'linear-gradient(135deg, #f5f7ff 0%, #eff4ff 50%, #e8f0ff 100%)'}}>
       <TopNav profile={profile} />
-      <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-10 py-6">
+      <main className="flex-grow max-w-7xl mx-auto w-full px-4 md:px-8 py-8">
         {children}
       </main>
     </div>

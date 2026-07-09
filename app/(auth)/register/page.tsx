@@ -17,63 +17,61 @@ export default function RegisterPage() {
     e.preventDefault()
     setLoading(true)
     setError('')
-
     const supabase = createClient()
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: fullName } },
     })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
+    if (error) { setError(error.message); setLoading(false); return }
     router.push('/onboarding')
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff] flex items-center justify-center p-4">
+    <div className="auth-bg">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="font-[family-name:var(--font-montserrat)] text-3xl font-bold text-[#ae2f34]">Rally</h1>
-          <p className="text-[#584140] mt-1">Make healthy competition the default.</p>
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 gradient-coral rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-brand font-black text-lg">R</span>
+            </div>
+            <span className="font-brand font-black text-3xl text-[#0b1c30]">Rally</span>
+          </div>
+          <p className="text-[#584140] text-sm">Make healthy competition the default.</p>
         </div>
 
-        <div className="glass-card momentum-shadow rounded-xl p-8">
-          <h2 className="font-[family-name:var(--font-montserrat)] text-xl font-semibold text-[#0b1c30] mb-6">
-            Create your account
-          </h2>
+        <div className="card p-8">
+          <h2 className="font-brand text-xl font-bold text-[#0b1c30] mb-1">Join Rally</h2>
+          <p className="text-sm text-[#584140] mb-7">Create your account and start competing</p>
 
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="block text-sm font-semibold text-[#0b1c30] mb-1">Full name</label>
+              <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Full name</label>
               <input
                 type="text"
                 value={fullName}
                 onChange={e => setFullName(e.target.value)}
                 placeholder="Jamie Smith"
                 required
-                className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] focus:border-transparent transition-all"
+                className="input-base"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#0b1c30] mb-1">Work email</label>
+              <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Work email</label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="you@deloitte.co.uk"
                 required
-                className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] focus:border-transparent transition-all"
+                className="input-base"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[#0b1c30] mb-1">Password</label>
+              <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Password</label>
               <input
                 type="password"
                 value={password}
@@ -81,24 +79,22 @@ export default function RegisterPage() {
                 placeholder="Min. 6 characters"
                 required
                 minLength={6}
-                className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] focus:border-transparent transition-all"
+                className="input-base"
               />
             </div>
 
-            {error && <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">{error}</div>
+            )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 vibrant-gradient-coral text-white font-semibold rounded-lg hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
-            >
+            <button type="submit" disabled={loading} className="btn-primary mt-2">
               {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>
 
-          <div className="mt-4 text-center text-sm text-[#584140]">
+          <div className="mt-6 pt-6 border-t border-[#eff4ff] text-center text-sm text-[#584140]">
             Already have an account?{' '}
-            <Link href="/login" className="text-[#005db8] font-semibold hover:underline">Sign in</Link>
+            <Link href="/login" className="text-[#ae2f34] font-semibold hover:underline">Sign in</Link>
           </div>
         </div>
       </div>

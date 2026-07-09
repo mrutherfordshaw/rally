@@ -8,7 +8,6 @@ import type { Organisation, OpUnit } from '@/lib/types'
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [org, setOrg] = useState<Organisation | null>(null)
   const [opUnits, setOpUnits] = useState<OpUnit[]>([])
   const [selectedOpUnit, setSelectedOpUnit] = useState('')
@@ -22,32 +21,14 @@ export default function OnboardingPage() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) { router.push('/login'); return }
 
-      setEmail(user.email ?? '')
       const domain = user.email?.split('@')[1]
       if (!domain) { setError('Could not determine your email domain.'); setFetching(false); return }
 
-      // Find org by domain
-      const { data: orgData } = await supabase
-        .from('organisations')
-        .select('*')
-        .eq('domain', domain)
-        .single()
-
-      if (!orgData) {
-        setError(`No organisation found for @${domain}. Please contact your admin.`)
-        setFetching(false)
-        return
-      }
+      const { data: orgData } = await supabase.from('organisations').select('*').eq('domain', domain).single()
+      if (!orgData) { setError(`No organisation found for @${domain}. Please contact your admin.`); setFetching(false); return }
 
       setOrg(orgData as Organisation)
-
-      // Load op units
-      const { data: units } = await supabase
-        .from('op_units')
-        .select('*')
-        .eq('org_id', orgData.id)
-        .order('name')
-
+      const { data: units } = await supabase.from('op_units').select('*').eq('org_id', orgData.id).order('name')
       setOpUnits((units as OpUnit[]) ?? [])
       setFetching(false)
     }
@@ -59,55 +40,55 @@ export default function OnboardingPage() {
     if (!org || !selectedOpUnit) return
     setLoading(true)
     setError('')
-
     const result = await completeOnboardingAction(org.id, selectedOpUnit)
-
-    if (result.error) {
-      setError(result.error)
-      setLoading(false)
-      return
-    }
-
+    if (result.error) { setError(result.error); setLoading(false); return }
     router.push('/dashboard')
   }
 
   if (fetching) {
     return (
-      <div className="min-h-screen bg-[#f8f9ff] flex items-center justify-center">
-        <div className="text-[#584140]">Setting up your account…</div>
+      <div className="auth-bg">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 rounded-full border-2 border-[#ae2f34] border-t-transparent animate-spin" />
+          <p className="text-[#584140] text-sm">Setting up your account…</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff] flex items-center justify-center p-4">
+    <div className="auth-bg">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="font-[family-name:var(--font-montserrat)] text-3xl font-bold text-[#ae2f34]">Rally</h1>
-          <p className="text-[#584140] mt-1">One last step</p>
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <div className="w-10 h-10 gradient-coral rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white font-brand font-black text-lg">R</span>
+            </div>
+            <span className="font-brand font-black text-3xl text-[#0b1c30]">Rally</span>
+          </div>
+          <p className="text-[#584140] text-sm">One last step</p>
         </div>
 
-        <div className="glass-card momentum-shadow rounded-xl p-8">
-          <h2 className="font-[family-name:var(--font-montserrat)] text-xl font-semibold text-[#0b1c30] mb-2">
-            Welcome to Rally
-          </h2>
+        <div className="card p-8">
+          <div className="w-12 h-12 gradient-coral rounded-xl flex items-center justify-center mb-5 shadow">
+            <span className="text-2xl">🏆</span>
+          </div>
+          <h2 className="font-brand text-xl font-bold text-[#0b1c30] mb-1">Choose your division</h2>
 
           {org ? (
             <>
-              <p className="text-sm text-[#584140] mb-6">
-                We found your organisation: <strong>{org.name}</strong>. Now pick your division to join the leaderboard.
+              <p className="text-sm text-[#584140] mb-7">
+                You&apos;re joining <strong className="text-[#0b1c30]">{org.name}</strong>. Pick your division to start competing on the leaderboard.
               </p>
 
               <form onSubmit={handleComplete} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#0b1c30] mb-1">
-                    Your division
-                  </label>
+                  <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Your division</label>
                   <select
                     value={selectedOpUnit}
                     onChange={e => setSelectedOpUnit(e.target.value)}
                     required
-                    className="w-full px-4 py-2.5 border border-[#e0bfbd] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#005db8] bg-white transition-all"
+                    className="input-base"
                   >
                     <option value="">Select your division…</option>
                     {opUnits.map(unit => (
@@ -116,21 +97,15 @@ export default function OnboardingPage() {
                   </select>
                 </div>
 
-                {error && (
-                  <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
-                )}
+                {error && <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700">{error}</div>}
 
-                <button
-                  type="submit"
-                  disabled={loading || !selectedOpUnit}
-                  className="w-full py-2.5 vibrant-gradient-coral text-white font-semibold rounded-lg hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
-                >
+                <button type="submit" disabled={loading || !selectedOpUnit} className="btn-primary mt-2">
                   {loading ? 'Joining…' : "Let's go →"}
                 </button>
               </form>
             </>
           ) : (
-            <p className="text-sm text-red-600">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-700 mt-4">{error}</div>
           )}
         </div>
       </div>

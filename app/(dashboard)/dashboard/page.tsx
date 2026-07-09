@@ -50,13 +50,13 @@ export default async function DashboardPage() {
   const orgName = (profile.organisations as { name: string } | null)?.name ?? 'Your Organisation'
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {/* Header */}
       <div>
-        <h1 className="font-[family-name:var(--font-montserrat)] text-3xl font-bold text-[#0b1c30]">
+        <h1 className="font-brand text-3xl font-black text-[#0b1c30]">
           Good {getGreeting()}, {profile.full_name?.split(' ')[0] ?? 'there'} 👋
         </h1>
-        <p className="text-[#584140] mt-1">{opUnitName} · {orgName}</p>
+        <p className="text-[#584140] mt-1 text-sm">{opUnitName} · {orgName}</p>
       </div>
 
       {/* Active challenge banner */}
@@ -64,31 +64,32 @@ export default async function DashboardPage() {
 
       {/* Stats row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="glass-card momentum-shadow rounded-xl p-6">
-          <p className="text-xs font-semibold text-[#584140] uppercase tracking-wider">Today&apos;s Steps</p>
-          <p className="font-[family-name:var(--font-montserrat)] text-4xl font-bold text-[#ae2f34] mt-2">
+        <div className="card momentum-shadow p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 gradient-coral opacity-5 rounded-full translate-x-8 -translate-y-8" />
+          <p className="text-xs font-bold text-[#584140] uppercase tracking-widest">Today&apos;s Steps</p>
+          <p className="font-brand text-4xl font-black text-[#ae2f34] mt-2">
             {todaySteps.toLocaleString()}
           </p>
           <div className="mt-3 h-2 bg-[#e5eeff] rounded-full overflow-hidden">
-            <div
-              className="h-full vibrant-gradient-coral rounded-full transition-all duration-700"
-              style={{ width: `${Math.min((todaySteps / 10000) * 100, 100)}%` }}
-            />
+            <div className="h-full gradient-coral rounded-full transition-all duration-700"
+              style={{ width: `${Math.min((todaySteps / 10000) * 100, 100)}%` }} />
           </div>
-          <p className="text-xs text-[#584140] mt-1">{Math.round((todaySteps / 10000) * 100)}% of 10,000 goal</p>
+          <p className="text-xs text-[#584140] mt-1.5">{Math.round((todaySteps / 10000) * 100)}% of 10,000 goal</p>
         </div>
 
-        <div className="glass-card momentum-shadow rounded-xl p-6">
-          <p className="text-xs font-semibold text-[#584140] uppercase tracking-wider">This Week</p>
-          <p className="font-[family-name:var(--font-montserrat)] text-4xl font-bold text-[#005db8] mt-2">
+        <div className="card momentum-shadow p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 gradient-blue opacity-5 rounded-full translate-x-8 -translate-y-8" />
+          <p className="text-xs font-bold text-[#584140] uppercase tracking-widest">This Week</p>
+          <p className="font-brand text-4xl font-black text-[#005db8] mt-2">
             {weekSteps.toLocaleString()}
           </p>
           <p className="text-xs text-[#584140] mt-4">Last 7 days total</p>
         </div>
 
-        <div className="glass-card momentum-shadow rounded-xl p-6">
-          <p className="text-xs font-semibold text-[#584140] uppercase tracking-wider">Your Rank</p>
-          <p className="font-[family-name:var(--font-montserrat)] text-4xl font-bold text-[#0b1c30] mt-2">
+        <div className="card momentum-shadow p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-24 h-24 gradient-teal opacity-5 rounded-full translate-x-8 -translate-y-8" />
+          <p className="text-xs font-bold text-[#584140] uppercase tracking-widest">Your Rank</p>
+          <p className="font-brand text-4xl font-black text-[#0b1c30] mt-2">
             {userRank ? `#${userRank}` : '—'}
           </p>
           <p className="text-xs text-[#584140] mt-4">Organisation leaderboard</p>
