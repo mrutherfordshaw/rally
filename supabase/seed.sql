@@ -6,7 +6,7 @@
 
 -- Organisations
 insert into public.organisations (id, name, domain) values
-  ('11111111-1111-1111-1111-111111111111', 'Deloitte', 'deloitte.com'),
+  ('11111111-1111-1111-1111-111111111111', 'Deloitte', 'deloitte.co.uk'),
   ('22222222-2222-2222-2222-222222222222', 'Accenture', 'accenture.com');
 
 -- Op Units (Deloitte)
