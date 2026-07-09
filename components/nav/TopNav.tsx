@@ -12,9 +12,12 @@ const navLinks = [
   { href: '/leaderboards', label: 'Leaderboards' },
 ]
 
+const adminRoles = ['org_admin', 'app_admin']
+
 export default function TopNav({ profile }: { profile: Profile | null }) {
   const pathname = usePathname()
   const router = useRouter()
+  const isAdmin = profile?.role && adminRoles.includes(profile.role)
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -47,6 +50,18 @@ export default function TopNav({ profile }: { profile: Profile | null }) {
               {link.label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin/org"
+              className={`text-sm font-semibold transition-colors pb-1 ${
+                pathname.startsWith('/admin')
+                  ? 'text-[#ae2f34] border-b-2 border-[#ae2f34]'
+                  : 'text-[#584140] hover:text-[#ae2f34]'
+              }`}
+            >
+              Admin
+            </Link>
+          )}
         </nav>
 
         {/* Right side */}
