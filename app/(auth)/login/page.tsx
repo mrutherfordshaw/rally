@@ -29,10 +29,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 gradient-coral rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-brand font-black text-lg">R</span>
-            </div>
-            <span className="font-brand font-black text-3xl text-[#0b1c30]">Rally</span>
+            <img src="/logo.png" alt="Rally" className="h-12 w-auto" />
           </div>
           <p className="text-[#584140] text-sm">Make healthy competition the default.</p>
         </div>

@@ -61,10 +61,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 gradient-coral rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-brand font-black text-lg">R</span>
-            </div>
-            <span className="font-brand font-black text-3xl text-[#0b1c30]">Rally</span>
+            <img src="/logo.png" alt="Rally" className="h-12 w-auto" />
           </div>
           <p className="text-[#584140] text-sm">One last step</p>
         </div>
@@ -73,7 +70,7 @@ export default function OnboardingPage() {
           <div className="w-12 h-12 gradient-coral rounded-xl flex items-center justify-center mb-5 shadow">
             <span className="text-2xl">🏆</span>
           </div>
-          <h2 className="font-brand text-xl font-bold text-[#0b1c30] mb-1">Choose your division</h2>
+          <h2 className="font-brand text-xl font-bold text-[#0b1c30] mb-1">Choose your service line</h2>
 
           {org ? (
             <>
@@ -83,14 +80,14 @@ export default function OnboardingPage() {
 
               <form onSubmit={handleComplete} className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Your division</label>
+                  <label className="block text-xs font-semibold text-[#0b1c30] mb-1.5 uppercase tracking-wider">Your service line</label>
                   <select
                     value={selectedOpUnit}
                     onChange={e => setSelectedOpUnit(e.target.value)}
                     required
                     className="input-base"
                   >
-                    <option value="">Select your division…</option>
+                    <option value="">Select your service line…</option>
                     {opUnits.map(unit => (
                       <option key={unit.id} value={unit.id}>{unit.name}</option>
                     ))}

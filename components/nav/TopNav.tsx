@@ -30,11 +30,8 @@ export default function TopNav({ profile }: { profile: Profile | null }) {
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-6">
 
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2.5 flex-shrink-0">
-          <div className="w-8 h-8 gradient-coral rounded-lg flex items-center justify-center shadow">
-            <span className="text-white font-brand font-black text-sm">R</span>
-          </div>
-          <span className="font-brand font-black text-xl text-[#0b1c30] hidden sm:block">Rally</span>
+        <Link href="/dashboard" className="flex items-center flex-shrink-0">
+          <img src="/logo.png" alt="Rally" className="h-9 w-auto" />
         </Link>
 
         {/* Desktop nav */}
