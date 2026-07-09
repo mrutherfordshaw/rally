@@ -15,13 +15,11 @@ export async function logMetric(payload: {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { data: null, error: 'Not authenticated' }
 
-  // If metric_type_id is empty, look it up via service role (bypasses RLS on metric_types)
-  if (!payload.metric_type_id) {
-    const service = await createServiceClient()
-    const { data: mt } = await service.from('metric_types').select('id').eq('slug', 'steps').single()
-    if (!mt?.id) return { data: null, error: 'Steps metric type not found. Run seed SQL.' }
-    payload.metric_type_id = mt.id
-  }
+  // Always resolve metric_type_id via service role to avoid RLS issues
+  const service = createServiceClient()
+  const { data: mt } = await service.from('metric_types').select('id').eq('slug', 'steps').single()
+  if (!mt?.id) return { data: null, error: 'Steps metric type not found in database.' }
+  payload.metric_type_id = mt.id
 
   // Upsert — if a log exists for this user/metric/date, update it
   const { data, error } = await supabase

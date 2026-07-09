@@ -80,7 +80,7 @@ export async function createOrganisation(payload: {
   name: string
   domain: string
 }): Promise<ActionResult<Organisation>> {
-  const supabase = await createServiceClient()
+  const supabase = createServiceClient()
   const { data, error } = await supabase
     .from('organisations')
     .insert(payload)

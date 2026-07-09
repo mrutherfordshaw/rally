@@ -6,7 +6,7 @@ export async function POST(request: Request) {
 
   if (!email) return NextResponse.json({ error: 'Email required' }, { status: 400 })
 
-  const supabase = await createServiceClient()
+  const supabase = createServiceClient()
 
   // Generate a magic link using the admin API — bypasses Supabase's mailer entirely
   const { data, error } = await supabase.auth.admin.generateLink({
