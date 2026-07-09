@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 export default function VerifyPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
-  const [otp, setOtp] = useState(['', '', '', '', '', ''])
+  const [otp, setOtp] = useState(['', '', '', '', '', '', '', ''])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [resending, setResending] = useState(false)
@@ -31,7 +31,7 @@ export default function VerifyPage() {
     const next = [...otp]
     next[index] = value.slice(-1)
     setOtp(next)
-    if (value && index < 5) inputs.current[index + 1]?.focus()
+    if (value && index < 7) inputs.current[index + 1]?.focus()
   }
 
   function handleKeyDown(index: number, e: React.KeyboardEvent) {
@@ -43,7 +43,7 @@ export default function VerifyPage() {
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault()
     const token = otp.join('')
-    if (token.length < 6) { setError('Please enter the full 6-digit code.'); return }
+    if (token.length < 8) { setError('Please enter the full 8-digit code.'); return }
 
     setLoading(true)
     setError('')
@@ -87,7 +87,7 @@ export default function VerifyPage() {
             Enter your code
           </h2>
           <p className="text-sm text-[#584140] mb-6">
-            We sent a 6-digit code to <strong>{email}</strong>. Check your spam folder if it doesn&apos;t arrive within 60 seconds.
+            We sent an 8-digit code to <strong>{email}</strong>. Check your spam folder if it doesn&apos;t arrive within 60 seconds.
           </p>
 
           <form onSubmit={handleVerify} className="space-y-6">
