@@ -79,6 +79,9 @@ export default function LoginPage() {
             Don&apos;t have an account?{' '}
             <Link href="/register" className="text-[#ae2f34] font-semibold hover:underline">Create one</Link>
           </div>
+          <p className="mt-3 text-center text-xs text-[#584140]">
+            Forgotten your password? Contact your Rally admin to reset it.
+          </p>
         </div>
       </div>
     </div>
