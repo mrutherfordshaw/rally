@@ -9,9 +9,10 @@ interface Props {
   orgId: string
   opUnitId: string | null
   todaySteps: number
+  metricTypeId: string
 }
 
-export default function StepLogger({ userId, orgId, opUnitId, todaySteps }: Props) {
+export default function StepLogger({ userId, orgId, opUnitId, todaySteps, metricTypeId }: Props) {
   const router = useRouter()
   const [steps, setSteps] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,9 +30,8 @@ export default function StepLogger({ userId, orgId, opUnitId, todaySteps }: Prop
     setLoading(true)
     setError('')
 
-    // Get steps metric type id
     const result = await logMetric({
-      metric_type_id: await getStepsMetricTypeId(),
+      metric_type_id: metricTypeId,
       date: new Date().toISOString().split('T')[0],
       value,
       source: 'manual',
@@ -97,14 +97,3 @@ export default function StepLogger({ userId, orgId, opUnitId, todaySteps }: Prop
   )
 }
 
-// Fetches steps metric type id from Supabase
-async function getStepsMetricTypeId(): Promise<string> {
-  const { createClient } = await import('@/lib/supabase/client')
-  const supabase = createClient()
-  const { data } = await supabase
-    .from('metric_types')
-    .select('id')
-    .eq('slug', 'steps')
-    .single()
-  return data?.id ?? ''
-}

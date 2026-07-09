@@ -22,6 +22,12 @@ export default async function DashboardPage() {
 
   if (!profile?.org_id) redirect('/onboarding')
 
+  const { data: stepsMetricType } = await supabase
+    .from('metric_types')
+    .select('id')
+    .eq('slug', 'steps')
+    .single()
+
   const [
     todaySteps,
     weekSteps,
@@ -95,6 +101,7 @@ export default async function DashboardPage() {
         orgId={profile.org_id}
         opUnitId={profile.op_unit_id}
         todaySteps={todaySteps}
+        metricTypeId={stepsMetricType?.id ?? ''}
       />
 
       {/* Leaderboards */}
