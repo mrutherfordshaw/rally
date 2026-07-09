@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -10,10 +10,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [sent, setSent] = useState(false)
+  const [cooldown, setCooldown] = useState(0)
+
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const t = setTimeout(() => setCooldown(c => c - 1), 1000)
+    return () => clearTimeout(t)
+  }, [cooldown])
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
+    if (cooldown > 0) return
     setLoading(true)
     setError('')
 
@@ -29,6 +36,8 @@ export default function LoginPage() {
       return
     }
 
+    setCooldown(60)
+    setLoading(false)
     sessionStorage.setItem('rally_verify_email', email)
     router.push('/verify')
   }
@@ -72,10 +81,10 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || cooldown > 0}
               className="w-full py-2.5 vibrant-gradient-coral text-white font-semibold rounded-lg hover:brightness-110 transition-all active:scale-95 disabled:opacity-60"
             >
-              {loading ? 'Sending code…' : 'Send sign-in code'}
+              {loading ? 'Sending code…' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Send sign-in code'}
             </button>
           </form>
 

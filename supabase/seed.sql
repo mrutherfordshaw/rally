@@ -20,7 +20,7 @@ insert into public.op_units (id, org_id, name) values
 -- Active org-wide challenge (Deloitte)
 insert into public.challenges (id, org_id, op_unit_id, metric_type_id, name, description, start_date, end_date, status)
 values (
-  'chall111-1111-1111-1111-111111111111',
+  'c0000001-0000-0000-0000-000000000001',
   '11111111-1111-1111-1111-111111111111',
   null,
   (select id from public.metric_types where slug = 'steps'),

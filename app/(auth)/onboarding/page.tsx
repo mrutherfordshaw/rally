@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { completeOnboardingAction } from './actions'
 import type { Organisation, OpUnit } from '@/lib/types'
 
 export default function OnboardingPage() {
@@ -59,17 +60,10 @@ export default function OnboardingPage() {
     setLoading(true)
     setError('')
 
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/login'); return }
+    const result = await completeOnboardingAction(org.id, selectedOpUnit)
 
-    const { error } = await supabase
-      .from('profiles')
-      .update({ org_id: org.id, op_unit_id: selectedOpUnit, onboarded: true })
-      .eq('id', user.id)
-
-    if (error) {
-      setError(error.message)
+    if (result.error) {
+      setError(result.error)
       setLoading(false)
       return
     }

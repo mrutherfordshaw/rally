@@ -3,17 +3,6 @@
 import { createClient, createServiceClient } from '@/lib/supabase/server'
 import type { ActionResult, Profile, Organisation, OpUnit } from '@/lib/types'
 
-export async function getProfile(userId: string): Promise<Profile | null> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single()
-
-  return data as Profile | null
-}
-
 export async function updateProfile(payload: Partial<Profile>): Promise<ActionResult<Profile>> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -107,6 +96,18 @@ export async function createOpUnit(payload: {
   name: string
 }): Promise<ActionResult<OpUnit>> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null, error: 'Not authenticated' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, org_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!['org_admin', 'app_admin'].includes(profile?.role ?? '')) return { data: null, error: 'Forbidden' }
+  if (payload.org_id !== profile?.org_id) return { data: null, error: 'Forbidden' }
+
   const { data, error } = await supabase
     .from('op_units')
     .insert(payload)

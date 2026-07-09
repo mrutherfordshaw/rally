@@ -38,7 +38,7 @@ export default async function OrgAdminPage() {
   const totalSteps = opUnits.reduce((sum, u) => sum + u.total_steps, 0)
   const memberCount = memberCountResult.count ?? 0
   const participationRate = memberCount > 0
-    ? Math.round((opUnits.filter(u => u.total_steps > 0).length / opUnits.length) * 100)
+    ? Math.round((opUnits.filter(u => u.total_steps > 0).reduce((sum, u) => sum + u.member_count, 0) / memberCount) * 100)
     : 0
 
   return (

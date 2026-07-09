@@ -38,6 +38,18 @@ export async function createChallenge(payload: {
   end_date: string
 }): Promise<ActionResult<Challenge>> {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { data: null, error: 'Not authenticated' }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, org_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!['org_admin', 'app_admin'].includes(profile?.role ?? '')) return { data: null, error: 'Forbidden' }
+  if (payload.org_id !== profile?.org_id) return { data: null, error: 'Forbidden' }
+
   const { data, error } = await supabase
     .from('challenges')
     .insert(payload)

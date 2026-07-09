@@ -53,6 +53,12 @@ create table public.metric_types (
 insert into public.metric_types (slug, unit, display_name)
 values ('steps', 'count', 'Steps');
 
+alter table public.metric_types enable row level security;
+
+create policy "Authenticated users can read metric types"
+  on public.metric_types for select
+  using (auth.uid() is not null);
+
 -- ============================================================
 -- METRIC LOGS (all health data goes here)
 -- ============================================================
@@ -151,6 +157,10 @@ returns text language sql stable security definer as $$
 $$;
 
 -- ORGANISATIONS policies
+create policy "Authenticated users can look up organisations"
+  on public.organisations for select
+  using (auth.uid() is not null);
+
 create policy "Users can view their own org"
   on public.organisations for select
   using (id = public.my_org_id());
@@ -168,6 +178,10 @@ create policy "App admins can update orgs"
   using (public.my_role() = 'app_admin');
 
 -- OP UNITS policies
+create policy "Authenticated users can view all op units"
+  on public.op_units for select
+  using (auth.uid() is not null);
+
 create policy "Users can view op units in their org"
   on public.op_units for select
   using (org_id = public.my_org_id());
